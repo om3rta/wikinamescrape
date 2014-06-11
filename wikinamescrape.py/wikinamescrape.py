@@ -29,12 +29,17 @@ while count != 10:
     name_class = WikiNameScrape()
     name = name_class.grab_name()
     if str.isalpha(name):
-        names['first']['first + str(count)] = name
-        count = count + 1
-        print count
-        print name
+        names['first']['first' + str(count)] = name
+        name_class = WikiNameScrape()
+        name = name_class.grab_name()
+        if str.isalpha(name):
+            names['last']['last' + str(count)] = name
+            count = count + 1
+            print count
 
-print names['first']
+
+
+print "example name: " + names['first']['first1'] + " " + names['last']['last1']
 
 
 #finalname will end up being the first word in the title of a wiki article. This will sometimes end up being a character
