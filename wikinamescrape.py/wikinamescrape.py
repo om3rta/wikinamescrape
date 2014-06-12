@@ -1,4 +1,3 @@
-#WikiNameScrape gathers names for use in testing from Wikipedia
 import urllib2
 from BeautifulSoup import BeautifulSoup
 
@@ -19,17 +18,17 @@ class WikiNameScrape:
             count = 0
             while count != 10:
                 name = WikiNameScrape().grab_name()
-                if str.isalpha(name):
+                if str.isalpha(name) and len(name) > 2:
                     dict_name['User_' + str(count)]['first'] = name
                     count = count + 1
-                    #print count #Take out comment on print to test
+                    #print str(count) + " " + name
             count = 0
             while count != 10:
                 name = WikiNameScrape().grab_name()
-                if str.isalpha(name):
+                if str.isalpha(name) and len(name) > 2:
                     dict_name['User_' + str(count)]['last'] = name
                     count = count + 1
-                    #print count #take out comment on print to test
+                    #print str(count) + " " + name
 
 
 names = {
@@ -44,4 +43,3 @@ scraper = WikiNameScrape()
 scraped_name = scraper.dict_add(names)
 
 #print "example name: " + names['User_0']['first'] + " " + names['User_0']['last']
-#take out comment on print to test. Spoiler alert: it works... probably.
