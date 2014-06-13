@@ -4,42 +4,51 @@ from BeautifulSoup import BeautifulSoup
 
 class WikiNameScrape:
 
-    def grab_name(self):
-        soup = BeautifulSoup(urllib2.urlopen('http://en.wikipedia.org/wiki/Special:Random').read())
-        wikititle = soup.find('title')
-        wikistr = str(wikititle)
-        wikisplit = wikistr.split(" ", 1)
-        wikilongname = wikisplit[1]
-        wikisplitlong = wikilongname.split(" ", 1)
-        finalname = wikisplitlong[0]
-        return finalname
-
-    def dict_add(self, dict_name):
-            count = 0
-            while count != 10:
-                name = WikiNameScrape().grab_name()
-                if str.isalpha(name) and len(name) > 2:
-                    dict_name['User_' + str(count)]['first'] = name
-                    count = count + 1
-                    #print str(count) + " " + name
-            count = 0
-            while count != 10:
-                name = WikiNameScrape().grab_name()
-                if str.isalpha(name) and len(name) > 2:
-                    dict_name['User_' + str(count)]['last'] = name
-                    count = count + 1
-                    #print str(count) + " " + name
+    def __init__(self):
+        self.names = {}
+        self.count = 0
 
 
-names = {
-    'User_0': {'first': None, 'last': None}, 'User_1': {'first': None, 'last': None},
-    'User_2': {'first': None, 'last': None}, 'User_3': {'first': None, 'last': None},
-    'User_4': {'first': None, 'last': None}, 'User_5': {'first': None, 'last': None},
-    'User_6': {'first': None, 'last': None}, 'User_7': {'first': None, 'last': None},
-    'User_8': {'first': None, 'last': None}, 'User_9': {'first': None, 'last': None}
-}
+    def grab_names(self, flag, run_times):
+        while self.count < run_times:
+            name_number = 0
+            finalname_last = ""
+            while name_number != 2:
+                if flag == "urban":
+                    soup = BeautifulSoup(urllib2.urlopen('http://www.urbandictionary.com/random.php').read())
+                else:
+                    soup = BeautifulSoup(urllib2.urlopen('http://en.wikipedia.org/wiki/Special:Random').read())
+                wikititle = soup.find('title')
+                wikistr = str(wikititle)
+                if flag == "urban":
+                    wikisplit = wikistr.split(":", 1)
+                else:
+                    wikisplit = wikistr.split(" ", 1)
+                wikilongname = wikisplit[1]
+                if flag == "urban":
+                    wikismallername = wikilongname.split("<", 1)
+                    wikifirstname = wikismallername[0]
+                    wikionename = wikifirstname.split(" ", 1)
+                    wikifinalname = wikionename[1]
+                    wikifinal_final = wikifinalname.split(" ", 1)
+                    finalname = wikifinal_final[0]
+                else:
+                    wikisplitlong = wikilongname.split(" ", 1)
+                    finalname = wikisplitlong[0]
+                if name_number % 2 == 0:
+                    finalname_first = finalname
+                else:
+                    finalname_last = finalname
+                name_number = name_number + 1
+            self.dict_add(finalname_first, finalname_last)
+        return self.names
+
+    def dict_add(self, new_first, new_last):
+            if str.isalpha(new_first) and str.isalpha(new_last):
+                self.names['User_%s' % self.count] = {'first': new_first, 'last': new_last}
+                self.count = self.count + 1
 
 scraper = WikiNameScrape()
-scraped_name = scraper.dict_add(names)
+scraped_name = scraper.grab_names("urban", 10)
 
-#print "example name: " + names['User_0']['first'] + " " + names['User_0']['last']
+print scraped_name
